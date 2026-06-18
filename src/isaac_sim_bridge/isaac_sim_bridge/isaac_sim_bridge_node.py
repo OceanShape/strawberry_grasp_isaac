@@ -14,13 +14,21 @@ import threading
 import time
 
 # Isaac Sim Standalone App 설정
+# 렌더링 부하를 줄이기 위한 경량 설정
+LAUNCH_CONFIG = {
+    "headless": False,
+    "width": 1280,
+    "height": 720,
+    "anti_aliasing": 0,        # FXAA 끔 (가장 큰 성능 개선)
+    "renderer": "RayTracedLighting",  # PathTracing 대신 경량 렌더러 사용
+}
 try:
     from isaacsim import SimulationApp
-    simulation_app = SimulationApp({"headless": False})
+    simulation_app = SimulationApp(LAUNCH_CONFIG)
 except ImportError:
     try:
         from omni.isaac.kit import SimulationApp
-        simulation_app = SimulationApp({"headless": False})
+        simulation_app = SimulationApp(LAUNCH_CONFIG)
     except ImportError:
         print("[Error] Isaac Sim Python 환경에서 실행해주세요 (예: ./python.sh isaac_sim_bridge_node.py)")
         sys.exit(1)
@@ -193,7 +201,17 @@ def main():
     def physics_step_callback(step_size):
         # 5-1. 액션 적용 (ROS -> Isaac)
         if node.target_action is not None and node.robot is not None:
-            action = ArticulationAction(joint_positions=node.target_action)
+            cmd = node.target_action
+            num_dof = node.robot.num_dof
+            
+            # 테스트 노드가 팔 관절(6개)만 보내면, 그리퍼 관절(나머지)은 현재 위치 유지
+            if num_dof is not None and len(cmd) < num_dof:
+                current_pos = node.robot.get_joint_positions()
+                full_cmd = current_pos.copy()
+                full_cmd[:len(cmd)] = cmd
+                cmd = full_cmd
+                
+            action = ArticulationAction(joint_positions=np.array(cmd))
             node.robot.apply_action(action)
             node.target_action = None  # 리셋
             
@@ -207,9 +225,14 @@ def main():
     spin_thread.start()
     
     # 7. 메인 스레드는 화면 렌더링 루프만 전담
+    # 물리는 매 스텝 돌리되, 렌더링은 RENDER_EVERY_N_STEPS에 1번만 수행하여 GPU 부하를 줄입니다.
+    RENDER_EVERY_N_STEPS = 4  # 물리 60Hz 기준 → 렌더링 ~15fps (조절 가능)
+    step_count = 0
     try:
         while simulation_app.is_running():
-            world.step(render=True)
+            should_render = (step_count % RENDER_EVERY_N_STEPS == 0)
+            world.step(render=should_render)
+            step_count += 1
     except KeyboardInterrupt:
         print("시뮬레이션을 종료합니다.")
     
