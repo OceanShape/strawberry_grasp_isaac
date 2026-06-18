@@ -1,0 +1,41 @@
+[0.306s] Invoking command in '/home/sun/strawberry_grasp_isaac/src/isaac_sim_bridge': PYTHONPATH=/home/sun/strawberry_grasp_isaac/build/isaac_sim_bridge/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/sun/strawberry_grasp_isaac/install/isaac_sim_bridge/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/isaac_sim_bridge build --build-base /home/sun/strawberry_grasp_isaac/build/isaac_sim_bridge/build install --record /home/sun/strawberry_grasp_isaac/build/isaac_sim_bridge/install.log --single-version-externally-managed install_data
+[0.407s] running egg_info
+[0.407s] creating ../../build/isaac_sim_bridge/isaac_sim_bridge.egg-info
+[0.407s] writing ../../build/isaac_sim_bridge/isaac_sim_bridge.egg-info/PKG-INFO
+[0.407s] writing dependency_links to ../../build/isaac_sim_bridge/isaac_sim_bridge.egg-info/dependency_links.txt
+[0.407s] writing entry points to ../../build/isaac_sim_bridge/isaac_sim_bridge.egg-info/entry_points.txt
+[0.407s] writing requirements to ../../build/isaac_sim_bridge/isaac_sim_bridge.egg-info/requires.txt
+[0.407s] writing top-level names to ../../build/isaac_sim_bridge/isaac_sim_bridge.egg-info/top_level.txt
+[0.407s] writing manifest file '../../build/isaac_sim_bridge/isaac_sim_bridge.egg-info/SOURCES.txt'
+[0.408s] reading manifest file '../../build/isaac_sim_bridge/isaac_sim_bridge.egg-info/SOURCES.txt'
+[0.408s] writing manifest file '../../build/isaac_sim_bridge/isaac_sim_bridge.egg-info/SOURCES.txt'
+[0.408s] running build
+[0.409s] running build_py
+[0.409s] creating /home/sun/strawberry_grasp_isaac/build/isaac_sim_bridge/build
+[0.409s] creating /home/sun/strawberry_grasp_isaac/build/isaac_sim_bridge/build/lib
+[0.409s] creating /home/sun/strawberry_grasp_isaac/build/isaac_sim_bridge/build/lib/isaac_sim_bridge
+[0.409s] copying isaac_sim_bridge/test_move_node.py -> /home/sun/strawberry_grasp_isaac/build/isaac_sim_bridge/build/lib/isaac_sim_bridge
+[0.409s] copying isaac_sim_bridge/isaac_sim_bridge_node.py -> /home/sun/strawberry_grasp_isaac/build/isaac_sim_bridge/build/lib/isaac_sim_bridge
+[0.410s] copying isaac_sim_bridge/__init__.py -> /home/sun/strawberry_grasp_isaac/build/isaac_sim_bridge/build/lib/isaac_sim_bridge
+[0.410s] running install
+[0.410s] running install_lib
+[0.410s] creating /home/sun/strawberry_grasp_isaac/install/isaac_sim_bridge/lib/python3.10/site-packages/isaac_sim_bridge
+[0.410s] copying /home/sun/strawberry_grasp_isaac/build/isaac_sim_bridge/build/lib/isaac_sim_bridge/test_move_node.py -> /home/sun/strawberry_grasp_isaac/install/isaac_sim_bridge/lib/python3.10/site-packages/isaac_sim_bridge
+[0.410s] copying /home/sun/strawberry_grasp_isaac/build/isaac_sim_bridge/build/lib/isaac_sim_bridge/isaac_sim_bridge_node.py -> /home/sun/strawberry_grasp_isaac/install/isaac_sim_bridge/lib/python3.10/site-packages/isaac_sim_bridge
+[0.410s] copying /home/sun/strawberry_grasp_isaac/build/isaac_sim_bridge/build/lib/isaac_sim_bridge/__init__.py -> /home/sun/strawberry_grasp_isaac/install/isaac_sim_bridge/lib/python3.10/site-packages/isaac_sim_bridge
+[0.410s] byte-compiling /home/sun/strawberry_grasp_isaac/install/isaac_sim_bridge/lib/python3.10/site-packages/isaac_sim_bridge/test_move_node.py to test_move_node.cpython-310.pyc
+[0.410s] byte-compiling /home/sun/strawberry_grasp_isaac/install/isaac_sim_bridge/lib/python3.10/site-packages/isaac_sim_bridge/isaac_sim_bridge_node.py to isaac_sim_bridge_node.cpython-310.pyc
+[0.411s] byte-compiling /home/sun/strawberry_grasp_isaac/install/isaac_sim_bridge/lib/python3.10/site-packages/isaac_sim_bridge/__init__.py to __init__.cpython-310.pyc
+[0.411s] running install_data
+[0.411s] creating /home/sun/strawberry_grasp_isaac/install/isaac_sim_bridge/share/ament_index
+[0.411s] creating /home/sun/strawberry_grasp_isaac/install/isaac_sim_bridge/share/ament_index/resource_index
+[0.411s] creating /home/sun/strawberry_grasp_isaac/install/isaac_sim_bridge/share/ament_index/resource_index/packages
+[0.411s] copying resource/isaac_sim_bridge -> /home/sun/strawberry_grasp_isaac/install/isaac_sim_bridge/share/ament_index/resource_index/packages
+[0.411s] copying package.xml -> /home/sun/strawberry_grasp_isaac/install/isaac_sim_bridge/share/isaac_sim_bridge
+[0.411s] running install_egg_info
+[0.412s] Copying ../../build/isaac_sim_bridge/isaac_sim_bridge.egg-info to /home/sun/strawberry_grasp_isaac/install/isaac_sim_bridge/lib/python3.10/site-packages/isaac_sim_bridge-0.0.0-py3.10.egg-info
+[0.412s] running install_scripts
+[0.421s] Installing isaac_sim_bridge_node script to /home/sun/strawberry_grasp_isaac/install/isaac_sim_bridge/lib/isaac_sim_bridge
+[0.421s] Installing test_move_node script to /home/sun/strawberry_grasp_isaac/install/isaac_sim_bridge/lib/isaac_sim_bridge
+[0.421s] writing list of installed files to '/home/sun/strawberry_grasp_isaac/build/isaac_sim_bridge/install.log'
+[0.433s] Invoked command in '/home/sun/strawberry_grasp_isaac/src/isaac_sim_bridge' returned '0': PYTHONPATH=/home/sun/strawberry_grasp_isaac/build/isaac_sim_bridge/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/sun/strawberry_grasp_isaac/install/isaac_sim_bridge/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/isaac_sim_bridge build --build-base /home/sun/strawberry_grasp_isaac/build/isaac_sim_bridge/build install --record /home/sun/strawberry_grasp_isaac/build/isaac_sim_bridge/install.log --single-version-externally-managed install_data
