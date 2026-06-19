@@ -14,14 +14,7 @@ import threading
 import time
 
 # Isaac Sim Standalone App 설정
-# 렌더링 부하를 줄이기 위한 경량 설정
-LAUNCH_CONFIG = {
-    "headless": False,
-    "width": 1280,
-    "height": 720,
-    "anti_aliasing": 0,        # FXAA 끔 (가장 큰 성능 개선)
-    "renderer": "RayTracedLighting",  # PathTracing 대신 경량 렌더러 사용
-}
+LAUNCH_CONFIG = {"headless": False}
 try:
     from isaacsim import SimulationApp
     simulation_app = SimulationApp(LAUNCH_CONFIG)
@@ -66,8 +59,8 @@ import numpy as np
 # ==========================================
 # [사용자 설정 영역]
 # ==========================================
-ROBOT_PRIM_PATH = "/World/robot_recent/strawberry_grasp_robot" # 에러 로그 기반으로 경로 수정됨
-TARGET_PRIM_PATH = "/World/strawberry"     # 목표물(딸기)의 Prim Path
+ROBOT_PRIM_PATH = "/World/robot_recent/strawberry_grasp_robot"
+TARGET_PRIM_PATH = "/World/strawberry"
 # ==========================================
 
 class IsaacSimBridgeNode(Node):
@@ -100,23 +93,28 @@ class IsaacSimBridgeNode(Node):
         
         # 스레드 간 명령 전달용 변수
         self.target_action = None
+        self.dof_names_cache = None  # 관절 이름 캐싱용 변수
         
         self.get_logger().info("Isaac Sim Virtual Bridge Node Started.")
 
     def publish_states(self):
-        # 이 함수는 이제 메인 스레드의 world.step() 직후에 호출되므로 안전합니다.
         try:
             if self.robot is not None:
                 if getattr(self.robot, 'num_dof', None) is None:
                     return
 
+                # 관절 이름 배열은 변하지 않으므로 한 번만 생성해서 캐싱
+                if self.dof_names_cache is None:
+                    self.dof_names_cache = [self.robot.dof_names[i] for i in range(self.robot.num_dof)]
+
                 js_msg = JointState()
                 js_msg.header.stamp = self.get_clock().now().to_msg()
-                js_msg.name = [self.robot.dof_names[i] for i in range(self.robot.num_dof)]
+                js_msg.name = self.dof_names_cache
                 js_msg.position = self.robot.get_joint_positions().tolist()
                 self.joint_states_pub.publish(js_msg)
                 
             if self.robot is not None and self.target is not None:
+                # Pose 연산은 타겟이 있을 때만 수행
                 target_pos, target_rot = self.target.get_world_pose()
                 robot_pos, robot_rot = self.robot.get_world_pose()
                 
@@ -196,15 +194,24 @@ def main():
     # 4. 노드 생성
     node = IsaacSimBridgeNode(robot=robot, target=target)
     
-    # 5. 물리엔진 동기화 콜백 설정 (PhysX 스레드 에러의 완벽한 해결책)
-    # 아이작 심의 물리엔진이 비동기로 돌더라도, 가장 안전한 타이밍에 이 콜백이 호출됩니다.
+    # 5. 물리엔진 동기화 콜백 설정
+    publish_rate = 30.0  # 초당 30회 퍼블리시
+    publish_interval = 1.0 / publish_rate
+    time_since_publish = 0.0
+
     def physics_step_callback(step_size):
-        # 5-1. 액션 적용 (ROS -> Isaac)
+        nonlocal time_since_publish
+
+        # 시뮬레이션이 재생 중(Playing)이 아닐 때는 물리 상태 접근 금지 (Invalidated 에러 방지)
+        if not world.is_playing():
+            return
+
+        # 5-1. 액션 적용 (ROS -> Isaac) : 액션은 지연 없이 즉시 적용
         if node.target_action is not None and node.robot is not None:
             cmd = node.target_action
             num_dof = node.robot.num_dof
             
-            # 테스트 노드가 팔 관절(6개)만 보내면, 그리퍼 관절(나머지)은 현재 위치 유지
+            # 팔 관절(6개)만 보내면, 그리퍼 관절(나머지)은 현재 위치 유지
             if num_dof is not None and len(cmd) < num_dof:
                 current_pos = node.robot.get_joint_positions()
                 full_cmd = current_pos.copy()
@@ -213,10 +220,13 @@ def main():
                 
             action = ArticulationAction(joint_positions=np.array(cmd))
             node.robot.apply_action(action)
-            node.target_action = None  # 리셋
+            node.target_action = None
             
-        # 5-2. 상태 발행 (Isaac -> ROS)
-        node.publish_states()
+        # 5-2. 상태 발행 (Isaac -> ROS) : 지정된 주기에만 실행되도록 스로틀링
+        time_since_publish += step_size
+        if time_since_publish >= publish_interval:
+            node.publish_states()
+            time_since_publish = 0.0
 
     world.add_physics_callback("ros2_bridge_sync", physics_step_callback)
     
@@ -224,15 +234,10 @@ def main():
     spin_thread = threading.Thread(target=rclpy.spin, args=(node,), daemon=True)
     spin_thread.start()
     
-    # 7. 메인 스레드는 화면 렌더링 루프만 전담
-    # 물리는 매 스텝 돌리되, 렌더링은 RENDER_EVERY_N_STEPS에 1번만 수행하여 GPU 부하를 줄입니다.
-    RENDER_EVERY_N_STEPS = 4  # 물리 60Hz 기준 → 렌더링 ~15fps (조절 가능)
-    step_count = 0
+    # 7. 메인 스레드는 렌더링 루프 전담 (GPU VSync가 자연스럽게 프레임 속도를 조절)
     try:
         while simulation_app.is_running():
-            should_render = (step_count % RENDER_EVERY_N_STEPS == 0)
-            world.step(render=should_render)
-            step_count += 1
+            world.step(render=True)
     except KeyboardInterrupt:
         print("시뮬레이션을 종료합니다.")
     
