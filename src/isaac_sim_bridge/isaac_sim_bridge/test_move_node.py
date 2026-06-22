@@ -82,15 +82,15 @@ class TestMoveNode(Node):
         
         self.get_logger().info(f"초기 TCP 위치: {initial_translation}")
 
-        # 이동 시퀀스 (단위: m) -> 10cm = 0.1m
+        # 이동 시퀀스 (단위: m) -> 30cm = 0.1m
         # +x, -x, +y, -y, +z, -z
         moves = [
-            (" +X (10cm)", np.array([0.1, 0.0, 0.0])),
-            (" -X (10cm)", np.array([-0.1, 0.0, 0.0])),
-            (" +Y (10cm)", np.array([0.0, 0.1, 0.0])),
-            (" -Y (10cm)", np.array([0.0, -0.1, 0.0])),
-            (" +Z (10cm)", np.array([0.0, 0.0, 0.1])),
-            (" -Z (10cm)", np.array([0.0, 0.0, -0.1])),
+            (" +X (30cm)", np.array([0.3, 0.0, 0.0])),
+            (" -X (30cm)", np.array([-0.3, 0.0, 0.0])),
+            (" +Y (30cm)", np.array([0.0, 0.3, 0.0])),
+            (" -Y (30cm)", np.array([0.0, -0.3, 0.0])),
+            (" +Z (30cm)", np.array([0.0, 0.0, 0.3])),
+            (" -Z (30cm)", np.array([0.0, 0.0, -0.3])),
         ]
 
         for name, offset in moves:

@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-package_name = 'isaac_sim_bridge'
+package_name = 'strawberry_sim_core'
 
 setup(
     name=package_name,
@@ -24,8 +24,8 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'test_move_node = isaac_sim_bridge.test_move_node:main',
-            'test_gripper_node = isaac_sim_bridge.test_gripper_node:main',
+            'fake_vision_node = strawberry_sim_core.fake_vision_node:main',
+            'sim_executor_bridge_node = strawberry_sim_core.sim_executor_bridge_node:main',
         ],
     },
 )

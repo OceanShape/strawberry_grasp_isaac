@@ -1,0 +1,17 @@
+scan_pose_candidates:
+  curobo_start_joints_deg: [87.98, -94.91, 129.9, 175.94, -31.34, 93.42]
+  use_for_automated_motion: true
+  collision_world_validated_for_motion: true
+  targets:
+    - cell_id: "root/nw"
+      tcp_transform_base: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+      endpoint_joints_deg: [87.98, -94.91, 129.9, 175.94, -31.34, 93.42]
+    - cell_id: "root/ne"
+      tcp_transform_base: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+      endpoint_joints_deg: [87.98, -94.91, 129.9, 175.94, -31.34, 93.42]
+    - cell_id: "root/se"
+      tcp_transform_base: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+      endpoint_joints_deg: [87.98, -94.91, 129.9, 175.94, -31.34, 93.42]
+    - cell_id: "root/sw"
+      tcp_transform_base: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+      endpoint_joints_deg: [87.98, -94.91, 129.9, 175.94, -31.34, 93.42]
