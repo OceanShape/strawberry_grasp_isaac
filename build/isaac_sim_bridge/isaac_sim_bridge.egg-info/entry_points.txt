@@ -1,4 +1,0 @@
-[console_scripts]
-isaac_sim_bridge_node = isaac_sim_bridge.isaac_sim_bridge_node:main
-test_move_node = isaac_sim_bridge.test_move_node:main
-
